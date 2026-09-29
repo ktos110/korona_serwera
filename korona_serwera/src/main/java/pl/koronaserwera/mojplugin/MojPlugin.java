@@ -204,3 +204,4 @@ public final class MojPlugin extends JavaPlugin implements Listener {
     }
     return false;
 }
+}
