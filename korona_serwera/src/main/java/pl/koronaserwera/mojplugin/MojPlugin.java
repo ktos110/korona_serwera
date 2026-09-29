@@ -109,12 +109,13 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         }
         NamespacedKey kluczKorona = new NamespacedKey(this, "korona_serwera");
         ShapedRecipe recepturaKorona = new ShapedRecipe(kluczKorona, korona);
-        recepturaKorona.shape("NGN", "EKE", "EHE");
+        recepturaKorona.shape("NCN", "EKE", "GHG");
         recepturaKorona.setIngredient('G', Material.ENCHANTED_GOLDEN_APPLE);
         recepturaKorona.setIngredient('K', new RecipeChoice.ExactChoice(klejnot));
         recepturaKorona.setIngredient('E', new RecipeChoice.ExactChoice(esencja_mocy));
         recepturaKorona.setIngredient('N', Material.NETHER_STAR);
-        recepturaKorona.setIngredient('H', Material.GOLDEN_HELMET);
+        recepturaKorona.setIngredient('H', Material.NETHERITE_HELMET);
+        recepturaKorona.setIngredient('C', Material.HEAVY_CORE);
         Bukkit.addRecipe(recepturaKorona);
     }
 
@@ -196,4 +197,4 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         return false;
     }
 
-    private boolean czyKtosInnyMaKorona(Player sprawdzanyGracz) {
+    private boolean czyKtosInnyMaKorona(Player sprawdzanyGracz) {}
