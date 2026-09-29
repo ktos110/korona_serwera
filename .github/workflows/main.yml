@@ -14,9 +14,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B package --file TUTAJ_WPISZ_NAZWE_FOLDERU/pom.xml
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Minecraft-Plugin-Jar
-        path: target/*.jar
+        path: korona_serwera/target/*.jar
