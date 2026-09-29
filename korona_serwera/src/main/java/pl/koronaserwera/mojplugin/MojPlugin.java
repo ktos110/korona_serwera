@@ -32,6 +32,7 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         
         stworzReceptury();
         getServer().getPluginManager().registerEvents(this, this);
+        new ZadanieKorony().runTaskTimer(this, 0L, 20L);
 
         getLogger().info("Wielostopniowy plugin z powiadomieniami zostal wlaczony!");
     }
@@ -111,7 +112,6 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         recepturaKorona.shape("NCN", "EKE", "GHG");
         recepturaKorona.setIngredient('G', Material.ENCHANTED_GOLDEN_APPLE);
         recepturaKorona.setIngredient('K', new RecipeChoice.ExactChoice(klejnot));
-        // Poprawiono z esencja_mocy na esencja, zgodnie z nazwą zmiennej z Etapu 1
         recepturaKorona.setIngredient('E', new RecipeChoice.ExactChoice(esencja));
         recepturaKorona.setIngredient('N', Material.NETHER_STAR);
         recepturaKorona.setIngredient('H', Material.NETHERITE_HELMET);
@@ -137,7 +137,6 @@ public final class MojPlugin extends JavaPlugin implements Listener {
                 } else {
                     String nazwaGracza = event.getWhoClicked().getName();
                     
-                    // Dokończone budowanie komunikatu i wysłanie go globalnie na serwer
                     Component ogloszenie = Component.text("\n[!] ")
                             .color(NamedTextColor.RED).bold()
                             .append(Component.text("Legenda sie dopełniła! Gracz ")
@@ -193,3 +192,16 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         return false;
     }
 
+    private boolean czyKtosInnyMaKorona(Player sprawdzanyGracz) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.equals(sprawdzanyGracz)) continue;
+            for (ItemStack item : p.getInventory().getContents()) {
+                if (item != null && item.hasItemMeta()) {
+                    String tag = item.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
+                    if ("korona".equals(tag)) return true;
+                }
+            }
+        }
+        return false;
+    }
+}
