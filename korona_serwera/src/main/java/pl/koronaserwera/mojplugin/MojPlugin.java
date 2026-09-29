@@ -197,4 +197,17 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         return false;
     }
 
-    private boolean czyKtosInnyMaKorona(Player sprawdzanyGracz) {}
+        private boolean czyKtosInnyMaKorona(Player sprawdzanyGracz) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.equals(sprawdzanyGracz)) continue;
+            for (ItemStack item : p.getInventory().getContents()) {
+                if (item != null && item.hasItemMeta()) {
+                    String tag = item.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
+                    if ("korona".equals(tag)) return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
