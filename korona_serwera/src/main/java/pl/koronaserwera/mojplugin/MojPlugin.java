@@ -97,7 +97,7 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         ItemMeta koronaMeta = korona.getItemMeta();
         if (koronaMeta != null) {
             koronaMeta.displayName(Component.text("Korona Serwera")
-                    .color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
+                    .color(NamedTextColor.GOLD).bold(true).decoration(TextDecoration.ITALIC, false));
             koronaMeta.lore(List.of(
                     Component.text("Final: Potezne insygnium wladzy.").color(NamedTextColor.GRAY),
                     Component.text("Daje stale efekty po zalozeniu na glowe.").color(NamedTextColor.DARK_PURPLE)
@@ -109,13 +109,12 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         }
         NamespacedKey kluczKorona = new NamespacedKey(this, "korona_serwera");
         ShapedRecipe recepturaKorona = new ShapedRecipe(kluczKorona, korona);
-        recepturaKorona.shape("NCN", "EKE", "GHG");
+        recepturaKorona.shape("NGN", "EKE", "EHE");
         recepturaKorona.setIngredient('G', Material.ENCHANTED_GOLDEN_APPLE);
         recepturaKorona.setIngredient('K', new RecipeChoice.ExactChoice(klejnot));
-        recepturaKorona.setIngredient('E', new RecipeChoice.ExactChoice(esencja));
+        recepturaKorona.setIngredient('E', new RecipeChoice.ExactChoice(esencja_mocy));
         recepturaKorona.setIngredient('N', Material.NETHER_STAR);
-        recepturaKorona.setIngredient('H', Material.NETHERITE_HELMET);
-        recepturaKorona.setIngredient('C', Material.HEAVY_CORE);
+        recepturaKorona.setIngredient('H', Material.GOLDEN_HELMET);
         Bukkit.addRecipe(recepturaKorona);
     }
 
@@ -130,24 +129,29 @@ public final class MojPlugin extends JavaPlugin implements Listener {
             String tag = wynik.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
             
             if ("korona".equals(tag)) {
+                // Sprawdzamy limit przedmiotu
                 if (czyKoronaIstniejeNaSerwerze()) {
                     event.setCancelled(true);
                     event.getWhoClicked().sendMessage(Component.text("Na serwerze moze istniec tylko jedna Korona Serwera! Zdobadz ja od obecnego wlasciciela.")
                             .color(NamedTextColor.RED));
                 } else {
+                    // Pobieramy nick gracza, który wytworzył przedmiot
                     String nazwaGracza = event.getWhoClicked().getName();
                     
+                    // Przygotowanie globalnej wiadomości na czat
                     Component ogloszenie = Component.text("\n[!] ")
-                            .color(NamedTextColor.RED).decorate(TextDecoration.BOLD)
+                            .color(NamedTextColor.RED).bold(true)
                             .append(Component.text("Legenda sie dopełniła! Gracz ")
-                                    .color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, false))
+                                    .color(NamedTextColor.YELLOW).bold(false))
                             .append(Component.text(nazwaGracza)
-                                    .color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD))
+                                    .color(NamedTextColor.WHITE).bold(true))
                             .append(Component.text(" wytworzył jedyną i niepowtarzalną ")
-                                    .color(NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, false))
-                            .append(Component.text("Korone Serwera\n")
-                                    .color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
+                                    .color(NamedTextColor.YELLOW).bold(false))
+                            .append(Component.text("Korone Serwera")
+                                    .color(NamedTextColor.GOLD).bold(true))
+                            .append(Component.text("!\n").color(NamedTextColor.YELLOW).bold(false));
                     
+                    // Wysłanie komunikatu do wszystkich graczy online
                     Bukkit.broadcast(ogloszenie);
                 }
             }
@@ -165,7 +169,7 @@ public final class MojPlugin extends JavaPlugin implements Listener {
                     event.setCancelled(true);
                     event.getItem().remove();
                     event.getEntity().sendMessage(Component.text("Wykryto nielegalny duplikat Korony! Przedmiot zostal zniszczony.")
-                            .color(NamedTextColor.DARK_RED).decorate(TextDecoration.BOLD));
+                            .color(NamedTextColor.DARK_RED).bold(true));
                 }
             }
         }
@@ -193,15 +197,3 @@ public final class MojPlugin extends JavaPlugin implements Listener {
     }
 
     private boolean czyKtosInnyMaKorona(Player sprawdzanyGracz) {
-    for (Player p : Bukkit.getOnlinePlayers()) {
-        if (p.equals(sprawdzanyGracz)) continue;
-        for (ItemStack item : p.getInventory().getContents()) {
-            if (item != null && item.hasItemMeta()) {
-                String tag = item.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
-                if ("korona".equals(tag)) return true;
-            }
-        }
-    }
-    return false;
-}
-}

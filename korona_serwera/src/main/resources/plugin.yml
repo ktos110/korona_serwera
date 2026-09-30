@@ -1,0 +1,5 @@
+name: KoronaSerwera
+version: 1.0
+main: pl.koronaserwera.mojplugin.MojPlugin
+api-version: "1.21"
+description: Plugin dodajacy Korone Serwera z efektami.
