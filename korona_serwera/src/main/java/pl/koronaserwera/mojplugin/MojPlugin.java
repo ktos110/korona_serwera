@@ -93,11 +93,14 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         Bukkit.addRecipe(recepturaKlejnot);
 
         // --- ETAP 4: Korona Serwera ---
+        // --- ETAP 4: Korona Serwera ---
         ItemStack korona = new ItemStack(Material.GOLDEN_HELMET);
         ItemMeta koronaMeta = korona.getItemMeta();
         if (koronaMeta != null) {
             koronaMeta.displayName(Component.text("Korona Serwera")
-                    .color(NamedTextColor.GOLD).bold(true).decoration(TextDecoration.ITALIC, false));
+                    .color(NamedTextColor.GOLD)
+                    .decoration(TextDecoration.BOLD, true)
+                    .decoration(TextDecoration.ITALIC, false));
             koronaMeta.lore(List.of(
                     Component.text("Final: Potezne insygnium wladzy.").color(NamedTextColor.GRAY),
                     Component.text("Daje stale efekty po zalozeniu na glowe.").color(NamedTextColor.DARK_PURPLE)
@@ -112,7 +115,7 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         recepturaKorona.shape("NGN", "EKE", "EHE");
         recepturaKorona.setIngredient('G', Material.ENCHANTED_GOLDEN_APPLE);
         recepturaKorona.setIngredient('K', new RecipeChoice.ExactChoice(klejnot));
-        recepturaKorona.setIngredient('E', new RecipeChoice.ExactChoice(esencja_mocy));
+        recepturaKorona.setIngredient('E', new RecipeChoice.ExactChoice(esencja)); // Poprawione z esencja_mocy na esencja
         recepturaKorona.setIngredient('N', Material.NETHER_STAR);
         recepturaKorona.setIngredient('H', Material.GOLDEN_HELMET);
         Bukkit.addRecipe(recepturaKorona);
@@ -129,71 +132,41 @@ public final class MojPlugin extends JavaPlugin implements Listener {
             String tag = wynik.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
             
             if ("korona".equals(tag)) {
-                // Sprawdzamy limit przedmiotu
                 if (czyKoronaIstniejeNaSerwerze()) {
                     event.setCancelled(true);
                     event.getWhoClicked().sendMessage(Component.text("Na serwerze moze istniec tylko jedna Korona Serwera! Zdobadz ja od obecnego wlasciciela.")
                             .color(NamedTextColor.RED));
                 } else {
-                    // Pobieramy nick gracza, który wytworzył przedmiot
                     String nazwaGracza = event.getWhoClicked().getName();
                     
-                    // Przygotowanie globalnej wiadomości na czat
                     Component ogloszenie = Component.text("\n[!] ")
-                            .color(NamedTextColor.RED).bold(true)
+                            .color(NamedTextColor.RED)
+                            .decoration(TextDecoration.BOLD, true)
                             .append(Component.text("Legenda sie dopełniła! Gracz ")
-                                    .color(NamedTextColor.YELLOW).bold(false))
+                                    .color(NamedTextColor.YELLOW)
+                                    .decoration(TextDecoration.BOLD, false))
                             .append(Component.text(nazwaGracza)
-                                    .color(NamedTextColor.WHITE).bold(true))
+                                    .color(NamedTextColor.WHITE)
+                                    .decoration(TextDecoration.BOLD, true))
                             .append(Component.text(" wytworzył jedyną i niepowtarzalną ")
-                                    .color(NamedTextColor.YELLOW).bold(false))
+                                    .color(NamedTextColor.YELLOW)
+                                    .decoration(TextDecoration.BOLD, false))
                             .append(Component.text("Korone Serwera")
-                                    .color(NamedTextColor.GOLD).bold(true))
-                            .append(Component.text("!\n").color(NamedTextColor.YELLOW).bold(false));
+                                    .color(NamedTextColor.GOLD)
+                                    .decoration(TextDecoration.BOLD, true))
+                            .append(Component.text("!\n")
+                                    .color(NamedTextColor.YELLOW)
+                                    .decoration(TextDecoration.BOLD, false));
                     
-                    // Wysłanie komunikatu do wszystkich graczy online
                     Bukkit.broadcast(ogloszenie);
                 }
             }
         }
     }
 
-       public static NamespacedKey getIdKlucza() {
-        return identyfikatorPrzedmiotu;
-    } // Zamyka metodę getIdKlucza
-
-    @EventHandler
-    public void przyCraftowaniu(CraftItemEvent event) {
-        ItemStack wynik = event.getRecipe().getResult();
-        if (wynik.hasItemMeta()) {
-            String tag = wynik.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
-            
-            if ("korona".equals(tag)) {
-                // Sprawdzamy limit przedmiotu
-                if (czyKoronaIstniejeNaSerwerze()) {
-                    event.setCancelled(true);
-                    event.getWhoClicked().sendMessage(Component.text("Na serwerze moze istniec tylko jedna Korona Serwera! Zdobadz ja od obecnego wlasciciela.")
-                            .color(NamedTextColor.RED));
-                } else {
-                    // Pobieramy nick gracza, który wytworzył przedmiot
-                    String nazwaGracza = event.getWhoClicked().getName();
-                    
-                    // Przygotowanie globalnej wiadomości na czat
-                    Component ogloszenie = Component.text("\n[!] ")
-                            .color(NamedTextColor.RED).bold(true)
-                            .append(Component.text("Legenda sie dopełniła! Gracz ")
-                                    .color(NamedTextColor.YELLOW).bold(false))
-                            .append(Component.text(nazwaGracza)
-                                    .color(NamedTextColor.WHITE).bold(true))
-                            .append(Component.text(" wytworzył jedyną i niepowtarzalną ")
-                                    .color(NamedTextColor.YELLOW).bold(false))
-                            .append(Component.text("Korone Serwera")
-                                    .color(NamedTextColor.GOLD).bold(true))
-                            .append(Component.text("!\n").color(NamedTextColor.YELLOW).bold(false));
-                    
-                    Bukkit.broadcast(ogloszenie);
-                } // Zamyka blok else
-            } // Zamyka blok if ("korona".equals(tag))
-        } // Zamyka blok if (wynik.hasItemMeta())
-    } // Zamyka metodę przyCraftowaniu
-} // Zamyka całą klasę MojPlugin
+    // Dodana metoda sprawdzająca, żeby zamknąć błąd "cannot find symbol"
+    private boolean czyKoronaIstniejeNaSerwerze() {
+        // Zwraca false, dopóki nie napiszesz własnej logiki sprawdzania (np. skanowania mapy świata)
+        return false;
+    }
+}
