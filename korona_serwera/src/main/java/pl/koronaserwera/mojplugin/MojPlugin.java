@@ -158,42 +158,42 @@ public final class MojPlugin extends JavaPlugin implements Listener {
         }
     }
 
+       public static NamespacedKey getIdKlucza() {
+        return identyfikatorPrzedmiotu;
+    } // Zamyka metodę getIdKlucza
+
     @EventHandler
-    public void przyPodnoszeniu(EntityPickupItemEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-        ItemStack przedmiot = event.getItem().getItemStack();
-        if (przedmiot.hasItemMeta()) {
-            String tag = przedmiot.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
+    public void przyCraftowaniu(CraftItemEvent event) {
+        ItemStack wynik = event.getRecipe().getResult();
+        if (wynik.hasItemMeta()) {
+            String tag = wynik.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
+            
             if ("korona".equals(tag)) {
-                if (czyKtosInnyMaKorona((Player) event.getEntity())) {
+                // Sprawdzamy limit przedmiotu
+                if (czyKoronaIstniejeNaSerwerze()) {
                     event.setCancelled(true);
-                    event.getItem().remove();
-                    event.getEntity().sendMessage(Component.text("Wykryto nielegalny duplikat Korony! Przedmiot zostal zniszczony.")
-                            .color(NamedTextColor.DARK_RED).bold(true));
-                }
-            }
-        }
-    }
-
-    public static boolean czyKoronaIstniejeNaSerwerze() {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            for (ItemStack item : p.getInventory().getContents()) {
-                if (item != null && item.hasItemMeta()) {
-                    String tag = item.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
-                    if ("korona".equals(tag)) return true;
-                }
-            }
-        }
-        for (World world : Bukkit.getWorlds()) {
-            for (Item itemEntity : world.getEntitiesByClass(Item.class)) {
-                ItemStack item = itemEntity.getItemStack();
-                if (item.hasItemMeta()) {
-                    String tag = item.getItemMeta().getPersistentDataContainer().get(identyfikatorPrzedmiotu, PersistentDataType.STRING);
-                    if ("korona".equals(tag)) return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean czyKtosInnyMaKorona(Player sprawdzanyGracz) {
+                    event.getWhoClicked().sendMessage(Component.text("Na serwerze moze istniec tylko jedna Korona Serwera! Zdobadz ja od obecnego wlasciciela.")
+                            .color(NamedTextColor.RED));
+                } else {
+                    // Pobieramy nick gracza, który wytworzył przedmiot
+                    String nazwaGracza = event.getWhoClicked().getName();
+                    
+                    // Przygotowanie globalnej wiadomości na czat
+                    Component ogloszenie = Component.text("\n[!] ")
+                            .color(NamedTextColor.RED).bold(true)
+                            .append(Component.text("Legenda sie dopełniła! Gracz ")
+                                    .color(NamedTextColor.YELLOW).bold(false))
+                            .append(Component.text(nazwaGracza)
+                                    .color(NamedTextColor.WHITE).bold(true))
+                            .append(Component.text(" wytworzył jedyną i niepowtarzalną ")
+                                    .color(NamedTextColor.YELLOW).bold(false))
+                            .append(Component.text("Korone Serwera")
+                                    .color(NamedTextColor.GOLD).bold(true))
+                            .append(Component.text("!\n").color(NamedTextColor.YELLOW).bold(false));
+                    
+                    Bukkit.broadcast(ogloszenie);
+                } // Zamyka blok else
+            } // Zamyka blok if ("korona".equals(tag))
+        } // Zamyka blok if (wynik.hasItemMeta())
+    } // Zamyka metodę przyCraftowaniu
+} // Zamyka całą klasę MojPlugin
